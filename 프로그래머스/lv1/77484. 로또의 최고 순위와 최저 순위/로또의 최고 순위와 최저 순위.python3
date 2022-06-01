@@ -1,0 +1,7 @@
+def solution(lottos, win_nums):
+    rank = {0:6, 1:6, 2:5, 3:4, 4:3, 5:2, 6:1} # key : 일치개수, value : 순위
+    
+    zero = lottos.count(0)
+    same = len(set(lottos) & set(win_nums))
+    
+    return rank[zero+same],rank[same]
