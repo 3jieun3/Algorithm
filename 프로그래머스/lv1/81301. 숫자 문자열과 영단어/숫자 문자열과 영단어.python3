@@ -1,0 +1,7 @@
+import re
+def solution(s):
+    eng = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+    for e in range(10):
+        if eng[e] in s:
+            s = re.sub(eng[e],str(e),s)
+    return int(s)
