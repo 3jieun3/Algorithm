@@ -1,43 +1,38 @@
-import numpy as np
-
-def move(ch, bef, new):
-    if ch == 'L':
-        h[bef] = 0
-        h[new] = 1
-    else:
-        h[bef] = 0
-        h[new] = 2
+left_nums = [1, 4, 7, -1]
+middle_nums = [2, 5, 8, 0]
+right_nums = [3, 6, 9, -1]
 
 def solution(numbers, hand):
-    answer = ''
-    global ph, h
-    ph = np.array([[1,2,3],[4,5,6],[7,8,9],[10,0,12]])
-    h = np.array([[0,0,0],[0,0,0],[0,0,0],[1,0,2]]) # 1: left , 2: right
-    for i, n in enumerate(numbers):
-        n_idx = np.where(ph==n)  # n 인덱스
-        l_idx = np.where(h==1)   # 왼손 위치
-        r_idx = np.where(h==2)   # 오른손 위치
-        if n in ph[:, 0:1]:
-            answer += 'L'
-            move('L', l_idx, n_idx)
-        elif n in ph[:, 2:]:
-            answer += 'R'
-            move('R', r_idx, n_idx)
-        else:                               
-            l_dis = abs(l_idx[0]-n_idx[0])+abs(l_idx[1]-n_idx[1])  # 왼손과의 거리 
-            r_dis = abs(r_idx[0]-n_idx[0])+abs(r_idx[1]-n_idx[1])  # 오른손과의 거리
-            
-            if l_dis > r_dis:
-                answer += 'R'
-                move('R', r_idx, n_idx)
-            elif l_dis < r_dis:
-                answer += 'L'
-                move('L', l_idx, n_idx)
-            else:
-                if hand == 'right':
-                    answer += 'R'
-                    move('R', r_idx, n_idx) 
-                else:
-                    answer += 'L'
-                    move('L', l_idx, n_idx)
-    return answer
+	answer = ''
+	left, right = -1, -1        # 왼손위치: *, 오른손위치: #
+	l, r = 0, 0                 # 왼손/오른손 현 위치에서의 거래
+	for i in range(len(numbers)):
+		n = numbers[i]
+		if n in left_nums:
+			answer += 'L'
+			left = n
+		elif n in right_nums:
+			answer += 'R'
+			right = n
+		else:
+			n_idx = middle_nums.index(n)
+			# 왼손 현 위치에서의 거리 계산
+			if left in left_nums:
+				l = abs(n_idx - left_nums.index(left)) + 1
+			elif left in middle_nums:
+				l = abs(n_idx - middle_nums.index(left))
+
+			# 오른손 현 위치에서의 거리 계산
+			if right in right_nums:
+				r = abs(n_idx - right_nums.index(right)) + 1
+			elif right in middle_nums:
+				r = abs(n_idx - middle_nums.index(right))
+
+			if (l < r) or (l == r and hand == 'left'):
+				answer += 'L'
+				left = n
+			elif (l > r) or (l == r and hand == 'right'):
+				answer += 'R'
+				right = n
+
+	return answer
