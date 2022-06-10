@@ -1,0 +1,18 @@
+# 비트마스킹
+def solution(n, arr1, arr2):
+     
+    arr = []
+    for i in range(n):
+        arr.append(arr1[i]|arr2[i])
+    
+    answer = []
+    for a in arr:
+        tmp = ''
+        for i in range(n):
+            if a&(1<<i) != 0:
+                tmp = '#' + tmp
+            else:
+                tmp = ' ' + tmp
+        answer.append(tmp)
+    
+    return answer
