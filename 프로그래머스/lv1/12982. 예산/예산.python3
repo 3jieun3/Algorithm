@@ -1,0 +1,23 @@
+import sys
+input = sys.stdin.readline
+
+def solution(d, budget):
+    
+    p = len(d) # 부서개수
+    d.sort() # 오름차순 정렬
+    tmp = 0
+    # i 개 부서로 만들 수 있는 최소 금액
+    MIN = [0]*(p+1)
+    for i in range(1, p+1):
+        tmp = d[i-1] + MIN[i-1]
+        # 최소 금액이 예산 초과하면 i 개 이상의 부서는 불가능
+        if tmp > budget:
+            return i-1
+        # 최소 금액이 예산과 일치하는 i 개까지 가능
+        elif tmp == budget:
+            MIN[i] = tmp
+            return i
+        else:
+            MIN[i] = tmp
+    # 모든 금액이 예산보다 적으면 모든 부서 가능
+    return p
