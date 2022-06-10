@@ -1,0 +1,17 @@
+def solution(board, moves):
+	bomb = 0
+	stack = []
+
+	n = len(board)
+	for i in range(len(moves)):
+		m = moves[i]
+		for r in range(n):
+			if board[r][m - 1]:
+				if stack and stack[-1] == board[r][m - 1]:
+					stack.pop()
+					bomb += 2
+				else:
+					stack.append(board[r][m - 1])
+				board[r][m - 1] = 0
+				break
+	return bomb
