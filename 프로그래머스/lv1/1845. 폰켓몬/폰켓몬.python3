@@ -1,0 +1,10 @@
+from collections import Counter
+
+def solution(nums):
+    n = len(nums)//2
+    info = dict(Counter(nums))
+    types = list(info.keys())
+    if len(info) >= n:
+        return n
+    else:
+        return len(info)
