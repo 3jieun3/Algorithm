@@ -1,0 +1,25 @@
+def solution(n, lost, reserve):
+    # n명 모두 참여 가능한 경우로 초기화 :0번쨰 + n명 + n+1번째
+    std = [True]*(n+2)
+    
+    # 도난당한 학생 참여 불가능
+    for l in lost:
+        std[l] = False
+
+    # 도난당한 학생 중 본인 여벌 있는 학생 참여 가능
+    rstack = reserve
+    for i in range(1,n+1):
+        if std[i] == False and i in reserve:
+            std[i] = True
+            rstack.remove(i)
+    
+    # 빌려줄 수 있는 학생들
+    rstack.sort()
+    while len(rstack) > 0:
+        r = rstack.pop(-1)
+        if std[r+1] == False:
+            std[r+1] = True
+        elif std[r-1] == False:
+            std[r-1] = True
+    
+    return std.count(True) - 2
