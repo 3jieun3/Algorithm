@@ -1,0 +1,10 @@
+import math
+
+def solution(left, right):
+    answer = 0
+    for n in range(left, right+1):
+        if math.sqrt(n)%1 == 0: # 제곱수는 약수 홀수 개
+            answer -= n
+        else:
+            answer += n
+    return answer
