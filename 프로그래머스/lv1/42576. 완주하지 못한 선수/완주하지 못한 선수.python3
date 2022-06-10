@@ -1,0 +1,18 @@
+def solution(participant, completion):
+	dic_p = {}
+	for i in range(len(participant)):
+		p = participant[i]
+		dic_p.setdefault(p, 0)
+		dic_p[p] += 1
+
+	dic_c = {}
+	for i in range(len(completion)):
+		c = completion[i]
+		dic_c.setdefault(c, 0)
+		dic_c[c] += 1
+
+	for k, v in dic_p.items():
+		if k not in dic_c:
+			return k
+		elif dic_c[k] != v:
+			return k
