@@ -1,0 +1,7 @@
+def solution(array, commands):
+    answer = []
+    for case in commands:
+        tmp = array[case[0]-1:case[1]]
+        tmp.sort()
+        answer.append(tmp[case[2]-1])
+    return answer
