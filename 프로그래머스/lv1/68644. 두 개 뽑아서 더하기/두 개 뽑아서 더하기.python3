@@ -1,0 +1,9 @@
+def solution(numbers):
+    ans = set({})
+    ln = len(numbers)
+    for i in range(ln-1):
+        for j in range(i+1, ln):
+            ans.add(numbers[i] + numbers[j])
+    ans = list(ans)
+    ans.sort()
+    return ans
