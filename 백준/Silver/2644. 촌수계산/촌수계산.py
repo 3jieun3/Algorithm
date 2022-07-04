@@ -1,4 +1,5 @@
 import sys
+sys.setrecursionlimit(10**6)
 input = sys.stdin.readline
 
 def bfs():
@@ -15,6 +16,16 @@ def bfs():
 	return -1
 
 
+def dfs(v, visited):
+	if v == man2:           # 원하는 사람 찾은 경우 종료
+		return
+	for w in range(1, n + 1):
+		# 인접하고 촌수 계산 아직 안되어있는 사람
+		if adj[v][w] == 1 and visited[w] == -1:
+			visited[w] = visited[v] + 1
+			dfs(w, visited)
+
+
 n = int(input())
 man1, man2 = map(int, input().split())
 # 부모 자식 관계
@@ -26,7 +37,10 @@ for _ in range(m):
 	adj[x][y] += 1
 	adj[y][x] += 1
 
-q = [man1]
+# q = [man1]
+# print(bfs())      # bfs 방법
+
 visited = [-1] * (n + 1)
 visited[man1] = 0
-print(bfs())
+dfs(man1, visited)
+print(visited[man2])
