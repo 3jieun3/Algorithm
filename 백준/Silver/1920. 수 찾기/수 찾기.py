@@ -1,12 +1,18 @@
-import sys
-n = int(input())
-a = set(map(int, sys.stdin.readline().split()))
 # set 의 탐색은 O(1)
 # list 의 탐색은  O(n)
-m = int(input())
-target = list(map(int, sys.stdin.readline().split()))
 
-for x in target:
-    if x in a: print('1')
-    else: print('0')
-    
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+A = set(map(int, input().split()))
+M = int(input())
+targets = list(map(int, input().split()))
+
+rst = [0] * M
+for i in range(M):
+	x = targets[i]
+	if x in A:
+		rst[i] = 1
+
+print(*rst, sep="\n")
