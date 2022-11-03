@@ -1,63 +1,56 @@
-def calcul_time(h1, m1, h2, m2):
+# 누적 주차 시간 계산
+def calcul_mins(h1, m1, h2, m2):
     if m1 <= m2:
         return (h2 - h1) * 60 + (m2 - m1)
-    else:
-        return (h2 - 1 - h1) * 60 + (m2 + 60 - m1)
+    return (h2 - 1 - h1) * 60 + (m2 + 60 - m1)
 
-def calcul_fee(tot, fees):
-    # fees : 기본분, 기본원, 단위분, 단위원
-    fee = fees[1]
-    if tot <= fees[0]:
-        return fee
-    else:
-        tot -= fees[0]
-        if tot % fees[2]:
-            fee += (tot // fees[2] + 1) * fees[3]
+# 주차 요금 계산
+def calcul_fee(mins, fees):
+    tot = fees[1]
+    if mins > fees[0]:
+        mins -= fees[0]
+        if mins % fees[2]:
+            tot += (mins // fees[2] + 1) * fees[3]
         else:
-            fee += (tot // fees[2]) * fees[3]
-        return fee
-    
+            tot += (mins // fees[2]) * fees[3]
+    return tot
+
 def solution(fees, records):
+    # 차 번호 오름차순 저장
     cars = []
-    for i in range(len(records)):
-        time, car, stat = records[i].split()
-        cars.append(car)
-        
-    cars = list(set(cars))
-    cars.sort()
+    for record in records:
+        cars.append(record.split()[1])
+    cars = sorted(list(set(cars)))
     cnt = len(cars)
+    print(cars)
+    time_records = [[''] * 24 for _ in range(cnt)]  # [i][j] = i번 자동차가 j시에 입차한 분 정보
+    status = [-1] * cnt    # [i] = i번 차가 들어왔던 시간
+    answer = [0] * cnt
     
-    times = [[''] * 24 for _ in range(cnt)]
-    status = [-1] * cnt
-    total_mins = [0] * cnt
+    for record in records:
+        time, num, stat = record.split()
+        hour, mins = map(int, time.split(':'))
+        idx = cars.index(num)
+        # 출차
+        if stat == 'OUT':
+            h = status[idx]
+            answer[idx] += calcul_mins(h, time_records[idx][h], hour, mins)
+            status[idx] = -1
+            time_records[idx][h] = ''
+        # 입차
+        else:
+            status[idx] = hour
+            time_records[idx][hour] = mins
     
-    for i in range(len(records)):
-        time, car, stat = records[i].split()
-        h, m = time.split(':')
-        idx = cars.index(car)
+    # 남아있는 차 확인
+    for idx in range(cnt):
+        if status[idx] != -1:
+            h = status[idx]
+            answer[idx] += calcul_mins(h, time_records[idx][h], 23, 59)
+    
+    
+    # 주차 요금 계산
+    for idx in range(cnt):
+        answer[idx] = calcul_fee(answer[idx], fees)
         
-        if stat == "OUT":       # 출차
-            for j in range(int(h) + 1):
-                if times[idx][j]:
-                    total_mins[idx] += calcul_time(j, int(times[idx][j]), int(h), int(m))
-                    times[idx][j] = ''
-                    status[idx] = -1
-        else:                   # 입차
-            times[idx][int(h)] += m
-            status[idx] = int(h)
-            
-    # 23:59 출차 간주
-    for i in range(cnt):
-        if status[i] != -1:
-            h = status[i]
-            total_mins[i] += calcul_time(h, int(times[i][h]), 23, 59)
-            times[i][h] = ''
-            status[i] = -1
-    
-    # 요금 계산
-    
-    fee_arr = [0] * cnt
-    for i in range(cnt):
-        fee_arr[i] = calcul_fee(total_mins[i], fees)
-    
-    return fee_arr
+    return answer
